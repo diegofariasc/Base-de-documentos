@@ -1,3 +1,7 @@
+# Medidas de proximidad
+# Proyecto final
+# Recuperacion de la informacion y busqueda en web
+
 from math import sqrt
 
 """

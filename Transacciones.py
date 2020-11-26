@@ -1,3 +1,7 @@
+# Modulo de transacciones con la base de datos
+# Proyecto final
+# Recuperacion de la informacion y busqueda en web
+
 import mysql.connector
 
 class ModuloTransacciones:
@@ -200,7 +204,7 @@ class ModuloTransacciones:
         tabla = []
 
         # Iterar sobre todos los ids de documentos
-        for documento in range( numeroDocumentos + 1):
+        for documento in range( numeroDocumentos + 1 ):
             
             # Recuperar el enesimo vector columna de la tabla 
             vector = self.obtenerVectorDocumento(documento)
