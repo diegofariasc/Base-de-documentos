@@ -5,14 +5,61 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="cliente.css">
-        <title>Recuperador</title>
+        <script src="cliente.js"></script>
+        <title>Recuperador Covid-19</title>
     </head>
 
     <body>
-        <label id="nombre" class="nombre">Recuperador de documentos</label>
-        <label id="descripcion" class="descripcion">Indique lo que le gustaría saber sobre el Covid-19</label>
-        <input id="campoBusqueda" name="campoBusqueda"> 
-        <button onclick="buscar()">Buscar</button>   
+
+        <div id="principal" class="principal" >
+            <div class="titulo">
+                <label id="nombre" class="nombre" style="background-color: #0e5f20; width: 65px;">R</label>
+                <label id="nombre" class="nombre" style="color: #333333;"> ecuperador</label>
+            </div>
+            <div class="descripcion">
+                <label id="descripcion" class="descripcion">¿Qué información necesita sobre el Covid-19?</label><br>
+                <input class="buscar" id="campoBusquedaPrincipal" name="campoBusquedaPrincipal"><br>
+                <label class="buscar" onclick="buscar()">Buscar</label>  
+            </div>
+        </div>
+
+        <div id="secundario" class="secundaria" style="margin-bottom: 10%;" hidden>
+            <div class="titulo" style="padding-top: 20px; padding-left: 20px; padding-bottom: 8px; margin-top: 0px; margin-bottom: 500px; position: fixed; background-color: white;" >
+                <label id="nombre" class="nombre" style="background-color: #0e5f20; font-size: 34px; width: 30px; vertical-align: middle;">R</label>
+                <label id="nombre" class="nombre" style="color: #333333; font-size: 38px; vertical-align: middle;"> ecuperador</label>
+                <input class="buscar" id="campoBusquedaSecundario" name="campoBusqueda" style="margin-left: 20px; margin-top: 0px; vertical-align: middle;">
+                <label class="buscar" onclick="buscar()" style="height: 31px; margin-top: 0px; vertical-align: middle; text-align: center; padding-top: 8px; margin-left: 10px;">Buscar</label><br>
+                <label onclick="desplegarOpcionesAvanzadas()"  id="nombre" class="nombre" style="color: #3f3f3f; font-size: 15px; font-weight: normal; vertical-align: middle; margin-top: 5px; margin-left: 230px; cursor: pointer;"><img src="Imagenes/avanzada.png" style="vertical-align: middle; margin-bottom: 6px;">&MediumSpace; Herramientas de búsqueda avanzada</label>
+                <div id="busquedaAvanzada" style="margin-left: 0px; border: solid 1px #e7e7e7; padding-left: 10px; width: 795px;" hidden>
+                    <label id="nombre" class="nombre" style="color: #3f3f3f; font-size: 15px; vertical-align: middle;">Proximidad: </label>
+                    <select name="proximidad" id="proximidad" style="vertical-align: middle; ">
+                        <option value="Distancia euclidiana">Distancia euclidiana</option>
+                        <option value="Distancia Manhattan">Distancia Manhattan</option>
+                        <option value="Producto interno">Producto interno</option>
+                        <option value="Similitud de cosenos">Similitud de cosenos</option>
+                        <option value="Coeficientes de Dice">Coeficientes de Dice</option>
+                        <option value="Coeficientes de Jaccard">Coeficientes de Jaccard</option>
+                    </select>
+                    <label id="nombre" class="nombre" style="color: #3f3f3f; font-size: 15px; vertical-align: middle; margin-left: 20px;">Resultados: </label>
+                    <input id="resultados" name="resultados" type="number" max="10" min="1" value="3">
+                    <label id="nombre" class="nombre" style="color: #3f3f3f; font-size: 15px; vertical-align: middle; margin-left: 20px;">Emplear: </label>
+                    <input type="radio" id="matrizFrecuencias" name="matrizFrecuencias" style="margin-left: 7px;" checked>
+                    <label for="matrizFrecuencias" class="nombre" style="color: #3f3f3f; font-size: 15px; vertical-align: middle;">FreqT</label>
+                    <input type="radio" id="matrizFrecuencias" name="matrizFrecuencias" style="margin-left: 7px;">
+                    <label for="DT" class="nombre" style="color: #3f3f3f; font-size: 15px; vertical-align: middle;">DT'</label>
+                    <label id="nombre" class="nombre" style="color: #3f3f3f; font-size: 15px; vertical-align: middle; margin-left: 20px;">Separación: </label>
+                    <input id="campoSeparaciones" name="campoSeparaciones" style="margin-left: 5px; margin-top: 0px; width: 80px; vertical-align: middle;">
+                    <label onclick="ocultarOpcionesAvanzadas()" class="nombre" style="color: #5a1010; font-size: 35px;  margin-left: 20px; font-weight: normal; vertical-align: middle; cursor: pointer;"><sup>&times;</sup></label>
+                </div>
+
+            </div><br>
+            <div id="contenedor" style="margin-top: 90px;"></div>
+        </div>
+
+        <div class="cinta">
+            <label id="informacion" class="informacion">Información disponible en: Español (México)</label>
+            <label id="informacion" class="informacion" style="margin-left: 30px;">LIS4031 Recuperación de información y búsqueda en web</label><br>
+        </div>
     </body>
 
 </html>

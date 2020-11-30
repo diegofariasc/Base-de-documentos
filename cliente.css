@@ -1,0 +1,85 @@
+/*Diseno del buscador*/
+
+body{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: lighter;
+    margin: 0px;
+}
+
+div{
+    width: 100%;
+}
+
+div.principal{
+    text-align: center;
+}
+
+div.titulo{
+    margin-top: 10%;
+}
+
+div.descripcion {
+    margin-top: 30px;   
+}
+
+div.cinta{
+    text-align: left;
+    background-color: #cfcfcf;
+    height: 40px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+div.secundaria{
+    text-align: left;
+}
+
+label.nombre {
+    display: inline-block;
+    font-size: 75px;
+    text-align: center;
+    color: white;
+}
+
+label.descripcion{
+    font-size: 20px;
+}
+
+label.informacion{
+    margin-top: 10px;
+    margin-left: 15px;
+    display: inline-block;
+    font-size: 17px;
+}
+
+input.buscar{
+    width: 30%;
+    height: 35px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: solid 1px rgb(141, 141, 141);
+    font-weight: 200;
+    font-size: 20px;
+    color: #424242;
+    padding-left: 40px;
+    padding-right: 40px;
+    background: url(Imagenes/campoBuscar.png) no-repeat left 10px center;
+}
+
+label.buscar{
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #2f5597;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 120px;
+    height: 30px;
+    font-size: 20px;
+    font-weight: lighter;
+    padding-top: 6px;
+    padding-bottom: 0px;
+}
+
+
