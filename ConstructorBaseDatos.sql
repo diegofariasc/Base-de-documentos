@@ -5,6 +5,7 @@ USE Recuperador;
 
 -- Tabla para representar documentos
 CREATE TABLE DOCUMENTO( id          INTEGER         NOT NULL,
+                        titulo      VARCHAR(255)    NOT NULL,
                         autor       VARCHAR(255)    NOT NULL,
                         abstract    MEDIUMTEXT      NOT NULL,
                         fecha       DATE            NOT NULL,
@@ -29,7 +30,8 @@ CREATE TABLE APARECE (  documento   INTEGER         NOT NULL,
                         termino     VARCHAR(50)     NOT NULL,
                         posicion    INTEGER         NOT NULL,
 
-                        FOREIGN KEY (documento) REFERENCES DOCUMENTO (id),
+                        FOREIGN KEY (documento) REFERENCES DOCUMENTO (id)
+                        ON DELETE CASCADE,
                         FOREIGN KEY (termino)   REFERENCES TERMINO (nombre),
                         PRIMARY KEY (documento, termino, posicion) );
 
