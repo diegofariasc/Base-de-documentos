@@ -19,20 +19,15 @@ class Lematizador:
     def lematizarTexto( self, texto ):
 
         lematizado = ""
+        texto = self.__preprocesarTexto( texto )
 
-        # Iterar sobre las lineas del documento
-        for linea in texto:
+        # Hacer split si es un signo de puntuacion o espacio
+        for palabra in texto.split():
 
-            # Preprocesar linea
-            linea = self.__preprocesarLinea( linea )
+            lematizado += self.__lematizarPalabra( palabra ) 
 
-            # Hacer split si es un signo de puntuacion o espacio
-            for palabra in linea.split():
-
-                lematizado += self.__lematizarPalabra( palabra ) 
-
-            # Agregar salto de linea al final para mantenerlas pese a la iteracion for
-            lematizado +="\n"
+        # Agregar salto de linea al final para mantenerlas pese a la iteracion for
+        lematizado +="\n"
 
         return lematizado
 
@@ -48,22 +43,23 @@ class Lematizador:
 
 
     """
-    La funcion preprocesa una linea antes de ser lematizada y la devuelve
+    La funcion preprocesa un texto antes de ser lematizado y lo devuelve
     sin signos gramaticales y en minusculas
     Input:  (str) con una linea del texto
     Output: (str) con la linea procesada
     """
-    def __preprocesarLinea( self, linea ):
+    def __preprocesarTexto( self, texto ):
 
         # Pasar a minuscula
-        linea = linea.lower()
+        texto = texto.lower()
 
         # Sustraer elementos de puntuacion
-        linea = sub(r'(e-)', 'e', linea)
-        linea = sub(r'[-/]', ' ', linea)
-        linea = sub(r'[^\w\s]', '', linea)
+        texto = sub(r'\n', ' ', texto)
+        texto = sub(r'(e-)', 'e', texto)
+        texto = sub(r'[-/]', ' ', texto)
+        texto = sub(r'[^\w\s]', '', texto)
 
-        return linea
+        return texto
 
     """
     El metodo remueve los sufijos de una palabra empleando la coleccion
