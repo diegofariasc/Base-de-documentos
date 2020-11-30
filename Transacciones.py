@@ -3,6 +3,7 @@
 # Recuperacion de la informacion y busqueda en web
 
 import mysql.connector
+from numpy import transpose
 
 class ModuloTransacciones:
 
@@ -39,6 +40,9 @@ class ModuloTransacciones:
 
             # Al concluir la lista de operaciones hacerlas permanentes
             self.__connection.commit()
+            cursor.close()
+
+            return True
 
         except:
 
@@ -61,6 +65,7 @@ class ModuloTransacciones:
         query = "SELECT MAX(id) FROM DOCUMENTO"
         cursor.execute( query )
         resultado = cursor.fetchall()
+        cursor.close()
 
         # Verificar si aun no hay ninguna insercion
         # Si es asi, devolver el indice -1. De otra forma, devolver el indice maximo
@@ -68,6 +73,30 @@ class ModuloTransacciones:
             return -1
         else:
             return resultado[0][0]
+
+    """
+    El metodo permite obtener el minimo id presente entre la coleccion
+    de documentos
+    Input:  None
+    Output: (int) con el numero del mayor indice
+    """
+    def obtenerMinimoIdDocumentos( self ):
+        
+        # Obtener el maximo id de la tabla DOCUMENTO
+        cursor = self.__connection.cursor()
+        query = "SELECT MIN(id) FROM DOCUMENTO"
+        cursor.execute( query )
+        resultado = cursor.fetchall()
+        cursor.close()
+
+        # Verificar si aun no hay ninguna insercion
+        # Si es asi, devolver el indice -1. De otra forma, devolver el indice maximo
+        if ( resultado[0][0] == None ):
+            return -1
+        else:
+            return resultado[0][0]
+
+
 
     """
     El metodo permite insertar un termino de indexacion 
@@ -110,11 +139,11 @@ class ModuloTransacciones:
 
     """
     El metodo permite insertar un documento en la base de datos
-    Input:  (str) autor, abstract, fecha, editorial, lugar, revista, isbn, doi 
+    Input:  (str) titulo, autor, abstract, fecha, editorial, lugar, revista, isbn, doi 
             con la informacion del documento que se pretende insertar
     Output: (int) con el id del documento insertado en caso exitoso. De lo contrario None
     """
-    def insertarDocumento( self, autor, abstract, fecha, editorial, lugar, revista, isbn, doi ):
+    def insertarDocumento( self, titulo, autor, abstract, fecha, editorial, lugar, revista, isbn, doi ):
 
         try:
 
@@ -122,9 +151,9 @@ class ModuloTransacciones:
             id = self.obtenerMaximoIdDocumentos() + 1
 
             # Preparar insercion 
-            instruccion = ("INSERT INTO DOCUMENTO ( id, autor, abstract, fecha, editorial, lugar, revista, isbn, doi )\
-            VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')")\
-            % ( id, autor, abstract, fecha.strftime('%Y-%m-%d'), editorial, lugar, revista, isbn, doi )
+            instruccion = ("INSERT INTO DOCUMENTO ( id, titulo, autor, abstract, fecha, editorial, lugar, revista, isbn, doi )\
+            VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')")\
+            % ( id, titulo, autor, abstract, fecha, editorial, lugar, revista, isbn, doi )
 
             # Ejecutar insercion
             cursor = self.__connection.cursor()
@@ -139,6 +168,40 @@ class ModuloTransacciones:
             cursor.close()
             return None
 
+
+    def generarConsulta( self ):
+
+        try:
+
+            # Obtener el maximo id presente en la tabla de documentos
+            id = self.obtenerMinimoIdDocumentos() 
+
+            # Garantizar un id negativo
+            if ( id >=0 ):
+                id = - 1
+            else:
+                id = id - 1
+
+            # Preparar insercion 
+            instruccion = ("INSERT INTO DOCUMENTO ( id, titulo, autor, abstract, fecha, editorial, lugar, revista, isbn, doi )\
+            VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')")\
+            % ( id, "", "", "", "2020-01-01", "", "", "", "", "" )
+
+            # Ejecutar insercion
+            cursor = self.__connection.cursor()
+            cursor.execute( instruccion )
+            self.__connection.commit()
+            return id
+            
+        except:
+
+            # En caso de error -> rollback
+            self.__connection.rollback()
+            cursor.close()
+            return None
+    
+    
+
     """
     El metodo permite registrar la aparicion de un termino en un documento en
     una posicion determinada
@@ -150,6 +213,22 @@ class ModuloTransacciones:
         # Ejecutar insercion
         instruccion = ("INSERT INTO APARECE ( documento, termino, posicion ) VALUES (%s, '%s', %s)")\
         % ( documento, termino, posicion )
+        self.__ejecutar([instruccion])
+
+
+    # -----------------------------------------------------------------
+    # METODOS DE ELIMINACION
+    # -----------------------------------------------------------------
+    """
+    El metodo permite insertar una relacion entre una palabra y su termino
+    Input:  (str) palabra y termino con la palabra y termino a relacionar
+    Output: (bool) indicando si la transaccion fue exitosa
+    """
+    def eliminarConsulta( self, id ):
+
+        # Ejecutar insercion
+        instruccion = ("DELETE FROM DOCUMENTO WHERE id = %s")\
+        % ( id )
         self.__ejecutar([instruccion])
 
     # -----------------------------------------------------------------
@@ -181,13 +260,12 @@ class ModuloTransacciones:
                         
             cursor.execute( query )
             resultado = [ count[0] for count in cursor.fetchall() ] 
+            cursor.close()
             return resultado
 
     
         except:
 
-            # En caso de error -> rollback
-            self.__connection.rollback()
             cursor.close()
             return None
 
@@ -213,7 +291,53 @@ class ModuloTransacciones:
             if (vector != None):
                 tabla.append(vector)
 
-        return tabla
-        
+        return transpose(tabla)
 
+    """
+    El metodo permite obtener los datos de un documento dado su id
+    de la base de datos
+    Input:  (int) id con el numero de documento a recuperar
+    Output: (list) con la informacion del documento dado
+    """
+    def obtenerInformacionDocumento(self, id):
+                
+        try:
+
+            cursor = self.__connection.cursor()
+            query = "SELECT titulo, autor, abstract, DATE_FORMAT(fecha, '%d %m %Y'), editorial, lugar, revista, isbn, doi " +\
+                    "FROM DOCUMENTO WHERE id = " + str(id)
+                        
+            cursor.execute( query )
+            resultado = cursor.fetchall()[0]
+            cursor.close()
+            return resultado
+    
+        except:
+
+            cursor.close()
+            return None
+
+
+    """
+    El metodo permite obtener de manera ordenada los terminos de indexacion almacenados 
+    en la base de datos
+    Input:  None
+    Output: (list) con la coleccion de terminos de indexacion
+    """
+    def obtenerTerminos( self ):
+
+        try:
+
+            cursor = self.__connection.cursor()
+            query = "SELECT * FROM TERMINO"
+                        
+            cursor.execute( query )
+            resultado = [ tuplaTermino[0] for tuplaTermino in cursor.fetchall() ] 
+            cursor.close()
+            return resultado
+    
+        except:
+
+            cursor.close()
+            return None
 
