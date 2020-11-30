@@ -3,8 +3,13 @@
 # Proyecto final
 # Recuperacion de la informacion y busqueda en web
 
-from Indexador  import Indexador
-from os         import system
+from Indexador      import Indexador
+from Servidor       import Servidor
+from Consultas      import Consultas
+from socketserver   import TCPServer
+from os             import system
+from datetime       import datetime
+
 
 class InterfazExperto:
 
@@ -40,6 +45,21 @@ class InterfazExperto:
         # El usuario elige indexar
         if opcion == "1":
             self.__procesarOpcionIndexar()
+
+        # El usuario elige lanzar el servidor
+        if opcion == "2":
+
+            # Generar un indice LSI previo a lanzar el servidor
+            if Consultas.indiceLSI == None:
+                system("clear")
+                print("\n[!] Debe generar un indice LSI antes de continuar...")
+                Consultas.establecerLSI()
+
+            system("clear")
+            print("[!] Servidor de consultas iniciado", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+            print("[!] Utilice ctrl + C para terminar el servidor")
+            httpd = TCPServer(("", 8080), Servidor)
+            httpd.serve_forever()
 
         # Si el usuario elige salir
         elif opcion == "3":
