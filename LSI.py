@@ -63,17 +63,18 @@ class IndiceLSI:
 
         return ( Ts, Ss, DTs, M, N, R )
 
-    """
-    El metodo calcula la similitud entre una consulta y un documento 
-    basandose en la distancia euclidiana
-    Input:  listaJ, listaI. Listas con la consulta y 
-            con las frecuencias de aparicion respectivamente
-    Output: (float) con la similitud entre ambas
-    """
-    def __calcularSimilitud(self, listaJ, listaI):
+    @staticmethod
+    def mostrarDimensionesSVD( freqT ):
+        
+        # Hacer descomposicion SVD
+        T, _, DT = svd( freqT , full_matrices=False)
 
-        return sqrt( sum( [ (dj - di) ** 2 for dj, di in zip( listaJ, listaI ) ] ) )
+        # Extraer dimensiones
+        M = shape( T ) [0]
+        N = shape( DT )[1]
+        R = shape( T ) [1]
 
+        return ( M, N, R )
 
     """
     El metodo calcula las soluciones de un sistema de ecuaciones
@@ -97,10 +98,10 @@ class IndiceLSI:
             dd (opcional) el numero de documentos que se desea que sean devueltos
     Output: Lista con los numeros de documentos mas relevantes
     """
-    def consultar(self, Q, dd = 1):
+    def consultar(self, Q, funcion, dd = 1):
 
         # Obtener una lista de tuplas (similitud, consulta)
-        similitudes = [(self.__calcularSimilitud( self.__DTs[:, doc],
+        similitudes = [(funcion( self.__DTs[:, doc],
                         self.__calcularSoluciones( Q ) ), doc)
                         for doc in range(self.__N)]
 
